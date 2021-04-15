@@ -1,18 +1,28 @@
-# Salesforce DX Project: Next Steps
+# Case #40661670 - Misleading error message "Invalid lookup filter: Syntax error. Found 'end of formula' "
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This is a minimal project to show misleading error message shown when pushing code to a scratch org for a project that has a look field with a lookup filter that references a missing record type on the target object.
 
-## How Do You Plan to Deploy Your Changes?
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+# To reproduce
 
-## Configure Your Salesforce DX Project
+Create a new scratch org:
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+    sfdx force:org:create -f config/project-scratch-def.json -d 1 -s
 
-## Read All About It
+Push the source:
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+    sfdx force:source:push
+
+An error is shown:
+
+    *** Deploying with REST ***
+    Job ID | 0Af7E00001XoyWRSAZ
+    SOURCE PROGRESS | █████████████████████████████████████░░░ | 13/14 Components
+    TYPE   PROJECT PATH                                                              PROBLEM
+    ─────  ────────────────────────────────────────────────────────────────────────  ─────────────────────────────────────────────────────────────────────
+    Error  force-app/main/default/objects/Product2/fields/Account__c.field-meta.xml  Invalid lookup filter: Syntax error.  Found 'end of formula' (149:13)
+    ERROR running force:source:push:  Push failed.
+
+
+When the record type does exist, the push is successful. This can be shown by replacing `sfdx-project.json` by `sfdx-project-with-suppliers.json` and retrying the `sfdx force:source:push` again.
+

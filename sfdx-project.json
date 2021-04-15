@@ -1,8 +1,6 @@
 {
   "packageDirectories": [
     {
-      "path": "suppliers"
-    }, {
       "path": "force-app",
       "default": true
     }
